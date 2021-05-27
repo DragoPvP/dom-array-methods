@@ -13,23 +13,26 @@ getRandomUser();
 
 //Fetch random user and add money
 async function getRandomUser() {
-   const res = await fetch('https://randomuser.me/api');
-   const data = await res.json();
+    const res = await fetch('https://randomuser.me/api');
+    const data = await res.json();
 
-   const user = data.results[0];
+    const user = data.results[0];
 
-   const newUser = {
-       name: `${user.name.first} ${user.name.last}`,
-       money: Math.floor(Math.random() * 1000000)
-   };
+    const newUser = {
+        name: `${user.name.first} ${user.name.last}`,
+        money: Math.floor(Math.random() * 1000000)
+    };
 
-   addData(newUser);
+    addData(newUser);
 }
 
 //Double Money
 function doubleMoney() {
     data = data.map(user => {
-        return {...user, money: user.money * 2};
+        return {
+            ...user,
+            money: user.money * 2
+        };
     });
 
     updateDOM();
@@ -50,12 +53,22 @@ function showMillion() {
 }
 
 //Calculate Riches
-function calculateRiches() {
-    const wealth = data.reduce((acc, num) => (acc += user.money), 0);
+function calculateWealth() {
+    const wealth = data.reduce((acc, user) => (acc += user.money), 0);
 
-    const wealthElm = document.createElement('div');
-    wealthElm.innerHTML = `<h3>Total Wealth: <strong>${formatMoney(wealth)}</strong></h3>`;
-    main.appendChild(wealthElm);
+    //Check if welathEl already exists in DOM
+    document.getElementById('wealthEl') ?
+        document.getElementById('wealthEl').remove() :
+        null;
+
+    const wealthEl = document.createElement('div');
+
+    //Also set id attribute to WealthEl
+    wealthEl.setAttribute('id', 'wealthEl');
+    wealthEl.innerHTML = `<h3>Total Wealth: <strong>${formatMoney(
+    wealth
+  )}</strong></h3>`;
+    main.appendChild(wealthEl);
 }
 
 //Add new obj to data arr
@@ -69,7 +82,7 @@ function addData(obj) {
 function updateDOM(provideData = data) {
     //Clear main Div
     main.innerHTML = '<h2><strong>Person</strong> Wealth</h2>';
-    
+
     provideData.forEach(item => {
         const element = document.createElement('div');
         element.classList.add('person');
@@ -88,4 +101,4 @@ addBtn.addEventListener('click', getRandomUser);
 doubleBtn.addEventListener('click', doubleMoney);
 sortBtn.addEventListener('click', sortByRiches);
 showBtn.addEventListener('click', showMillion);
-calcBtn.addEventListener('click', calculateRiches);
+calcBtn.addEventListener('click', calculateWealth);
